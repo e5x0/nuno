@@ -7,16 +7,16 @@ import logging
 
 from fabric import Connection
 
-from nuno.common import ReturnCode, TaskOutput, NunoArgs, compose
+from nuno.common import ReturnCode, TaskOutput, NunoArgs, compose, sudo
 
 
 def init(f) -> Callable:
     """Decorator to initialize Nuno"""
 
     def _wrapper(c: Connection, args: NunoArgs) -> ReturnCode:
-        return compose(set_exit, parse_ansible_vars, set_logger, set_task_output)(f)(
-            c, args
-        )
+        return compose(
+            set_exit, isLinux, parse_ansible_vars, set_logger, set_task_output
+        )(f)(c, args)
 
     return _wrapper
 
@@ -63,5 +63,20 @@ def set_exit(f) -> Callable:
         rc = f(c, args)
         if rc != 0:
             raise SystemExit(rc)
+
+    return _wrapper
+
+
+def isLinux(f) -> Callable:
+    """Decorator to check the OS of a host"""
+
+    def _wrapper(c: Connection, args: NunoArgs) -> ReturnCode:
+        uname = sudo(c, "uname -s")
+        uname_stdout = uname.stdout.replace("\n", "")
+        if "Linux" not in uname_stdout:
+            err = "No idea how to get disk space on {}!".format(uname_stdout)
+            args.logger.warning(err)
+            return 1
+        return f(c, args)
 
     return _wrapper
