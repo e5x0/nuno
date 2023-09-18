@@ -1,0 +1,6 @@
+_vscode
+.vscode
+.venv
+.env
+__pycache__
+memo.md

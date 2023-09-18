@@ -1,0 +1,30 @@
+[project]
+name = "nuno"
+version = "0.1.0"
+description = "Add a short description here"
+authors = [
+    { name = "e5x0", email = "dummy@example.com" }
+]
+dependencies = [
+    "ansible>=8.3.0",
+    "fabric>=3.2.1",
+    "types-PyYAML>=6.0.12.11",
+]
+readme = "README.md"
+requires-python = ">= 3.11"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest>=7.4.0",
+    "black>=23.7.0",
+    "mypy>=1.5.1",
+    "pre-commit>=3.3.3",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
