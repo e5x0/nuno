@@ -1,5 +1,6 @@
+SHELL=/bin/bash
 .PHONY: pre
 pre:
-	rye sync
-	pre-commit install
- 
+	. .venv/bin/activate \
+	&& rye sync \
+	&& pre-commit install
