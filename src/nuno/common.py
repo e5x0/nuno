@@ -2,6 +2,7 @@ from dataclasses import dataclass, asdict
 from typing import List, Union, TypeAlias, Callable, Optional, Tuple
 import logging
 import functools
+import json
 
 from fabric import Connection, task
 
@@ -33,7 +34,7 @@ class TaskOutput:
         self.output = []
 
     def __repr__(self) -> str:
-        return str(asdict(self))
+        return json.dumps(asdict(self))
 
 
 @dataclass
