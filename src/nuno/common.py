@@ -61,6 +61,7 @@ class Pipeline:
         c: Connection,
         user: str = "root",
         source_profile: bool = True,
+        chdir="",
         settings_opts: dict = {
             "echo": True,
             "hide": True,
@@ -71,6 +72,7 @@ class Pipeline:
         self.connection = c
         self.cmd_list: List[Command] = []
         self.user = user
+        self.chdir = chdir
         self.source_profile = source_profile
         self.setting_opts = settings_opts
 
@@ -89,6 +91,7 @@ class Pipeline:
                     source_profile=self.source_profile,
                     cmd=c,
                     user=self.user,
+                    chdir=self.chdir,
                     settings_opts=self.setting_opts,
                 )
             elif callable(c):
@@ -111,6 +114,7 @@ def sudo(
     cmd: str,
     user: str = "root",
     source_profile: bool = True,
+    chdir="",
     settings_opts: dict = {
         "echo": True,
         "hide": True,
@@ -122,6 +126,8 @@ def sudo(
     """Run a command as root or another user"""
     su = "su - " + user + " -c "
     shell = "bash -l -c '" if source_profile else "bash -c '"
+    if chdir != "":
+        cmd = "cd " + chdir + "; " + cmd
     cmd = cmd.replace("'", "'\\''")
     sudo_cmd = su + shell + cmd + "'"
     result = c.sudo(sudo_cmd, **settings_opts)
