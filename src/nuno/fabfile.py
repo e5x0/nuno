@@ -33,5 +33,24 @@ def install_mysql_fdw(c: Connection, ansbile_vars: dict | str = "{}"):
     )
 
 
+@task
+def install_pgadmin4(
+    c: Connection,
+    email: str = "dummy@hoge.io",
+    password: str = "dummy",
+    ansbile_vars: dict | str = "{}",
+):
+    nuno.postgresql.deploy.install_pgadmin4(
+        c,
+        NunoArgs(
+            fabric_vars={
+                "email": email,
+                "password": password,
+            },
+            ansible_vars=ansbile_vars,
+        ),
+    )
+
+
 if __name__ == "__main__":
     pass

@@ -55,3 +55,26 @@ def install_mysql_fdw(c: Connection, args: NunoArgs) -> ReturnCode:
     )
     args.logger.info(args.o)
     return 0
+
+
+@nuno.decorator.init
+def install_pgadmin4(c: Connection, args: NunoArgs) -> ReturnCode:
+    environment_vars = (
+        "PGADMIN_SETUP_EMAIL={0[email]} PGADMIN_SETUP_PASSWORD={0[password]} ".format(
+            args.fabric_vars
+        )
+    )
+    args.o.output = (
+        Pipeline(c, user="root")
+        .pipe(
+            "curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg"
+        )
+        .pipe(
+            'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+        )
+        .pipe("apt install -y pgadmin4-web")
+        .pipe(environment_vars + "/usr/pgadmin4/bin/setup-web.sh --yes")
+        .execute()
+    )
+    args.logger.info(args.o)
+    return 0
