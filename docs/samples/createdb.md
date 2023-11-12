@@ -8,6 +8,8 @@ fab -r src/nuno -H "${FABRIC_HOSTS}" \
      -i ${FABRIC_SSH_KEY} \
      createdb-pgsql \
      --dbname="nunodb" \
+     --locale="C" \
+     --encoding="UTF8" \
      | lltsv -k message -K | jq .
 
 ```
