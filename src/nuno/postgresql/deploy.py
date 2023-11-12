@@ -5,6 +5,22 @@ import nuno.decorator
 
 
 @nuno.decorator.init
+def createdb_pgsql(c: Connection, args: NunoArgs) -> ReturnCode:
+    """Create a database"""
+    args.o.output = (
+        Pipeline(c, user="isupg")
+        .pipe(
+            "createdb --locale=C -E UTF8 --template=template0 --no-password {0[dbname]}".format(
+                args.fabric_vars
+            )
+        )
+        .execute()
+    )
+    args.logger.info(args.o)
+    return 0
+
+
+@nuno.decorator.init
 def install_sqlite_fdw(c: Connection, args: NunoArgs) -> ReturnCode:
     """Install sqlite_fdw on a host"""
     args.o.output = Pipeline(c, user="root").pipe("systemctl stop postgresql").execute()
