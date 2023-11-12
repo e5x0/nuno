@@ -20,6 +20,29 @@ def postgresql_version(c: Connection, ansbile_vars: dict | str = "{}"):
 
 
 @task
+def createdb_pgsql(
+    c: Connection,
+    dbname="nunodb",
+    locale="C",
+    encoding="UTF8",
+    template="template0",
+    ansbile_vars: dict | str = "{}",
+):
+    nuno.postgresql.deploy.createdb_pgsql(
+        c,
+        NunoArgs(
+            fabric_vars={
+                "dbname": dbname,
+                "locale": locale,
+                "encoding": encoding,
+                "template": template,
+            },
+            ansible_vars=ansbile_vars,
+        ),
+    )
+
+
+@task
 def install_sqlite_fdw(c: Connection, ansbile_vars: dict | str = "{}"):
     nuno.postgresql.deploy.install_sqlite_fdw(
         c, NunoArgs(fabric_vars={}, ansible_vars=ansbile_vars)
