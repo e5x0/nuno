@@ -10,7 +10,7 @@ def createdb_pgsql(c: Connection, args: NunoArgs) -> ReturnCode:
     args.o.output = (
         Pipeline(c, user="isupg")
         .pipe(
-            "createdb --locale=C -E UTF8 --template=template0 --no-password {0[dbname]}".format(
+            "createdb --locale={0[locale]} -E {0[encoding]} --template={0[template]} --no-password {0[dbname]}".format(
                 args.fabric_vars
             )
         )
